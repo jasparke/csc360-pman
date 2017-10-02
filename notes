@@ -1,0 +1,21 @@
+bgstart -> SIGCONT
+bgstop -> SIGSTOP
+bgkill -> SIGTERM
+
+
+
+waitpid()
+
+function 1: monitor - wait for change
+function 2: clean up zombie process
+
+
+pstat:
+
+1. comm
+2. stats /proc/pid/status
+3. utime
+4. stime
+5. rss /proc/pid/stat (resident set size)
+6. v_c_s
+7. nov_c_s /proc/pid/status
