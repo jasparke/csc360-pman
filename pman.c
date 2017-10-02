@@ -1,5 +1,5 @@
 /*
-	pman.c
+	PMan.c
 	Basic process manager with support for pausing processes and viewing info.
 
 	Jason Parker
@@ -15,11 +15,23 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+enum {
+	MAX_LEN = 120,
+	RUNNING = 1,
+	STOPPED = 0
+};
 
-#define MAX_LEN 120
-#define RUNNING 1
-#define STOPPED 0
+const char* PROMPTSTRING = "PMan>: ";
+char* COMMANDS[] = {
+	"bg",
+	"bgkill",
+	"bgstart",
+	"bgstop",
+	"pstat",
+	"bglist"
+};
 
+//node_t for double linked list of procs.
 typedef struct node_t {
 	pid_t pid;
 	int status;
@@ -30,6 +42,8 @@ typedef struct node_t {
 
 node_t* listHead = NULL;
 node_t* listTail = NULL;
+
+
 
 void bg(char* process) {
 
@@ -61,22 +75,25 @@ void bglist() {
 		count++;
 		curr = curr->next;
 	}
-	printf("Total background jobs: \t %d", count);
+	printf("Total background jobs: \t %d\n", count);
 }
 
+
+/* ### PROMPT FUNCTIONS ### */
+
 void updateProcess() {
-	printf("updateprocess() called.");
+	printf("updateprocess() called.\n");
 }
 
 int readInput(char** input) {
 
 
-	printf("readInput() called.");
+	printf("readInput() called.\n");
 	return true;
 }
 
 void updateFromInput(input) {
-	printf("updateFromInput() called.");
+	printf("updateFromInput() called.\n");
 }
 
 
@@ -92,42 +109,96 @@ void appendNode(pid_t pid, char* proc) {
 	new_proc->prev = listTail;
 
 	listTail = new_proc;
-	if (listHead == NULL) { listHead = new_proc; }
+	if (listHead == NULL) listHead = new_proc;
 }
 
+// Remove the node of pid from the tracked process list
 void removeNode(pid_t pid) {
-	node_t* curr = listHead;
+	node_t* node = findNode(pid);
 
-	while (curr != NULL) {
-		if (curr->pid == pid) {
-			if (curr == listHead) listHead = curr->next;
-			if (curr == listTail) listTail = curr->prev;
-			curr->next->prev = curr->prev;
-			curr->prev->next = curr->next;
-			return;
-		}
-		curr = curr->next;
-	}
-	printf("ERR: Process %d does not exist.", pid);
+	if (node != NULL) {
+		if (node == listHead) listHead = node->next;
+		if (node == listTail) listTail = node->prev;
+		node->next->prev = node->prev;
+		node->prev->next = node->next;
+	} else printf("ERR: Process %d does not exist.\n", pid);
 }
 
-/**
- * read the input from user and make sure its valid
- * @param input
- * @return true if no issue, false otherwise
- */
+//find a node in the tracked processes with a pid. Returns NULL if not found
+node_t findNode(pid_t pid) {
+	node_t* curr = listHead;
+	while (curr != NULL) {
+		if (curr->pid == pid) break;
+	}
+
+	return curr;
+}
+
+//transform a string to a pid and return it. Return -1 if not valid.
+// DOES NO CHECK IF PID EXISTS.
+pid_t strToPid(char* s) {
+	for (int i = 0; i < strlen(s); i++)
+		if (!isdigit(s.charat(i))) return -1;
+
+	return atoi(s);
+}
+
+// attempt to execute a command if it has valid arguments, otherwise print the error.
+void execute(int cmd, char** args) {
+	switch (cmd) { // handle the "generic cases"
+		case 0: {
+			bg(args);
+			break;
+		}
+
+		case 1: {
+			bgkill(strToPid(args[1]));
+			break;
+		}
+
+		case 2: {
+			bgstart(strToPid(args[1]));
+			break;
+		}
+
+		case 3: {
+			bgstop(strToPid(args[1]));
+			break;
+		}
+
+		case 4: {
+			pstat(strToPid(args[1]));
+			break;
+		}
+		case 5: {
+			bglist();
+			break;
+		}
+		default: {
+			printf("PMan:> %s:\t command not found", args[0]);
+			break;
+		}
+	}
+}
 
 // build the prompt for user input and runs the main program loop.
 int main() {
-	 while(true) {
-		 char* input[MAX_LEN];
+	while(true) {
+		char* prompt[MAX_LEN] = NULL;
 
-		 updateProcess();
-		 if (readInput(input) {
-			 updateFromInput(input);
-		 }
-		 updateProcess();
-	 }
+		prompt = readline("PMan:> ");
+		if (strcmp(prompt, "")) {
+			char* tokenizedPrompt = strtok(prompt, " ");
+			int command = -1;
+			for (int i = 0; i < 6; i++) {
+				if (strcmp(tokenizedPrompt[0], COMMANDS[i]) == 0) {
+					command = i;
+					break;
+				}
+			}
+			execute(command, tokenizedPrompt);
+		}
+	}
 
 	 return 0;
 }
