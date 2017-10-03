@@ -119,7 +119,7 @@ pid_t strToPid(char* s) {
 		}
 	}
 }*/
-void bg(char** userInput) {
+void bg(char** userInput, int i) {
 	pid_t pid = fork();
 	if (pid == 0) {    // child
 		char* command = userInput[1];
