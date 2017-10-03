@@ -188,8 +188,10 @@ void execute(char* args[], int argcount) {
 			break;
 		}
 	}
-
-	if (cmd != 5 && argcount < 2) {
+	if (cmd == -1) {
+		printf("PMan:> %s:\t command not found", args[0]);
+		return;
+	} else if (cmd != 5 && argcount < 2) {
 		printf("ERR: Not enough arguments supplied for %s\n", args[0]);
 		return;
 	}
@@ -224,7 +226,6 @@ void execute(char* args[], int argcount) {
 			break;
 		}
 		default: {
-			printf("PMan:> %s:\t command not found", args[0]);
 			break;
 		}
 	}
