@@ -51,9 +51,6 @@ node_t* listTail = NULL;
 
 //find a node in the tracked processes with a pid. Returns NULL if not found
 node_t* findNode(pid_t pid) {
-	#ifdef DEBUG
-		printf("Call to findNode(%d)\n", pid);
-	#endif
 	node_t* curr = listHead;
 
 	if(listHead == NULL) return NULL;
@@ -62,18 +59,11 @@ node_t* findNode(pid_t pid) {
 		if (curr->next == NULL) return NULL;
 		curr = curr->next;
 	}
-
-	#ifdef DEBUG
-		printf("findNode(%d) call finished\n", pid);
-	#endif
 	return curr;
 }
 
 // Append a process to the process list
 void appendNode(pid_t pid, char* cmd) {
-	#ifdef DEBUG
-		printf("Call to appendNode(%d, %s)\n", pid, cmd);
-	#endif
 	node_t* new_proc = (node_t*)malloc(sizeof(node_t));
 	new_proc->pid = pid;
 	new_proc->cmd = cmd;
@@ -84,47 +74,27 @@ void appendNode(pid_t pid, char* cmd) {
 	if (listTail != NULL) listTail->next = new_proc;
 	listTail = new_proc;
 	if (listHead == NULL) listHead = new_proc;
-	#ifdef DEBUG
-		printf("appendNode(%d, %s) call finished\n", pid, cmd);
-	#endif
 }
 
 // Remove the node of pid from the tracked process list
 void removeNode(pid_t pid) {
-	#ifdef DEBUG
-		printf("Call to removeNode(%d)\n", pid);
-	#endif
 	node_t* node = findNode(pid);
-	#ifdef DEBUG
-		printf("returned to removenode from findnode\n");
-		printf("removenode call to findnode returned%s\n", (node == NULL)? "Null" : "not null");
-		printf("kkkkkkk..... this should go into the next if statement\n");
-	#endif
 	if (node != NULL) {
 		if (node == listHead) listHead = listHead->next;
 		else node->prev->next = node->next;
 		if (node == listTail) listTail = node->prev;
 		else node->next->prev = node->prev;
 	} else printf("ERR: Process %d does not exist.\n", pid);
-	#ifdef DEBUG
-		printf("findNode(%d) call finished\n", pid);
-	#endif
 }
 
 //transform a string to a pid and return it. Return -1 if not valid.
 // DOES NO CHECK IF PID EXISTS.
 pid_t strToPid(char* s) {
-	#ifdef DEBUG
-		printf("Call to strToPid(%s)", s);
-	#endif
 	int i;
 	for (i = 0; i < strlen(s); i++){
 		if (!isdigit(s[i])) return -1;
 	}
 	return atoi(s);
-	#ifdef DEBUG
-		printf("strToPid(%s) call finished\n", s);
-	#endif
 }
 
 //forks into a child process and attempts to execute the command given in args.
@@ -133,6 +103,7 @@ void bg(char** args, int argcount) {
 		if (!access(args[1], X_OK)) { // only fork if the command is actually executable.
 			pid_t pid = fork(); // start a child
 			if (pid == 0) { //hello child
+				printf("execvp(%s, %s)", args[1], args[2]);
 				execvp(args[1], &args[1]);
 				printf("ERR: failed to execute %s\n", args[1]);
 				exit(1); //kill the failed pman
