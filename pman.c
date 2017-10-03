@@ -31,11 +31,11 @@ char* COMMANDS[] = {
 	"bglist"
 };
 
-//node_t for double linked list of procs.
+//node_t for double linked list of cmds.
 typedef struct node_t {
 	pid_t pid;
 	int status;
-	char* proc;
+	char* cmd;
 	struct node_t* next;
 	struct node_t* prev;
 } node_t;
@@ -44,11 +44,24 @@ node_t* listHead = NULL;
 node_t* listTail = NULL;
 
 
-
-void bg(char* process) {
-
+//forks into a child process and attempts to execute the command given in args.
+void bg(char** args) {
+	pid_t pid = fork();
+	if (pid == 0) { //hello child
+		execvp(args[1], &args[1]);
+		printf("ERR: failed to execute %s\n", args);
+		exit(1);
+	} else if (pid > 0) {
+		printf("Process %d was started\n", pid);
+		appendNode(pid, args[1]);
+		usleep(1000);
+	} else {
+		printf("ERR: Could not fork() :(");
+	}
 }
 
+//These three functions are more or less identical - check if pid exists and send the relevant signal to them.
+//Erros on bad pid or fail to send signal.
 void bgkill(pid_t pid) {
 	node_t* node = findNode(pid);
 
@@ -92,7 +105,7 @@ void bglist() {
 	node_t* curr = listHead;
 
 	while (curr != NULL) {
-		printf("%d:\t %s %s\n",curr->pid, curr->proc, (curr->status == STOPPED)? "(stopped)" : "(running)");
+		printf("%d:\t %s %s\n",curr->pid, curr->cmd, (curr->status == STOPPED)? "(stopped)" : "(running)");
 		count++;
 		curr = curr->next;
 	}
@@ -102,10 +115,10 @@ void bglist() {
 /* ### LIST FUNCTIONS ### */
 
 // Append a process to the process list
-void appendNode(pid_t pid, char* proc) {
+void appendNode(pid_t pid, char* cmd) {
 	node_t* new_proc = (node_t*)malloc(sizeof(node_t));
 	new_proc->pid = pid;
-	new_proc->proc = proc;
+	new_proc->cmd = cmd;
 	new_proc->status = RUNNING;
 	new_proc->next = NULL;
 	new_proc->prev = listTail;
@@ -135,6 +148,8 @@ node_t findNode(pid_t pid) {
 
 	return curr;
 }
+
+
 
 //transform a string to a pid and return it. Return -1 if not valid.
 // DOES NO CHECK IF PID EXISTS.
@@ -188,6 +203,7 @@ int main() {
 	while(true) {
 		char* prompt[MAX_LEN] = NULL;
 
+		updateBackgroundProcess();
 		prompt = readline("PMan:> ");
 		if (strcmp(prompt, "")) {
 			char* tokenizedPrompt = strtok(prompt, " ");
@@ -200,6 +216,7 @@ int main() {
 			}
 			execute(command, tokenizedPrompt);
 		}
+		updateBackgroundProcess();
 	}
 
 	 return 0;
