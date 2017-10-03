@@ -103,7 +103,7 @@ void bg(char** args, int argcount) {
 		if (!access(args[1], X_OK)) { // only fork if the command is actually executable.
 			pid_t pid = fork(); // start a child
 			if (pid == 0) { //hello child
-				printf("execvp(%s, %s)", args[1], args[2]);
+				printf("execvp(%s, %s)", args[1], &args[1]);
 				execvp(args[1], &args[1]);
 			} else if (pid > 0) { // when back in the parent, add the started child to the list.
 				printf("Process %d was started\n", pid);
