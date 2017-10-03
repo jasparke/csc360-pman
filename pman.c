@@ -66,6 +66,7 @@ void appendNode(pid_t pid, char* cmd) {
 	new_proc->next = NULL;
 	new_proc->prev = listTail;
 
+	if (listTail != NULL) listTail->next = new_proc;
 	listTail = new_proc;
 	if (listHead == NULL) listHead = new_proc;
 }
