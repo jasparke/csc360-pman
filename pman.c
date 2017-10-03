@@ -111,7 +111,7 @@ void bg(char** args) {
 			pid_t pid = fork(); // start a child
 			if (pid == 0) { //hello child
 				char* ctr = args[1];
-				execvp(ctr, &args[1]);
+				execvp(ctr, &args[2]);
 				printf("ERR: failed to execute %s\n", args[1]);
 				exit(1); //kill the failed pman
 			} else if (pid > 0) { // when back in the parent, add the started child to the list.
