@@ -226,7 +226,7 @@ void updateBackgroundProcess() {
 	pid_t pid;
 	int stat;
 	while (true) {
-		pid = waitpid(-1, &status, WCONTINUED | WNOHANG | WUNTRACED);
+		pid = waitpid(-1, &stat, WCONTINUED | WNOHANG | WUNTRACED);
 		if (pid > 0) {
 			if (WIFEXITED(stat)) {
 				printf("Process %d terminated\n", pid);
