@@ -89,6 +89,7 @@ printf("debug5\n");
 		node->prev->next = node->next;
 		printf("debug6\n");
 	} else printf("ERR: Process %d does not exist.\n", pid);
+	printf("debug66\n");
 }
 
 //transform a string to a pid and return it. Return -1 if not valid.
@@ -124,14 +125,12 @@ void bg(char** args) {
 //These three functions are more or less identical - check if pid exists and send the relevant signal to them.
 //Erros on bad pid or fail to send signal.
 void bgkill(pid_t pid) {
-	printf("debug1\n");
 	if (pid == -1) {
 		printf("Error: SOMETHING\n");
 		return;
 	}
 	node_t* node = findNode(pid);
 
-		printf("debug2\n");
 	if(node == NULL) {
 		printf("ERR: Process %d does not exist.\n", pid);
 		return;
