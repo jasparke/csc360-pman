@@ -19,6 +19,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#define DEBUG 1
+
 #define MAX_LEN 35
 #define RUNNING 1
 #define STOPPED 0
@@ -49,6 +51,9 @@ node_t* listTail = NULL;
 
 //find a node in the tracked processes with a pid. Returns NULL if not found
 node_t* findNode(pid_t pid) {
+	#ifdef DEBUG
+		printf("Call to findNode(%d)\n", pid);
+	#endif
 	node_t* curr = listHead;
 
 	if(listHead == NULL) return NULL;
@@ -63,45 +68,55 @@ node_t* findNode(pid_t pid) {
 
 // Append a process to the process list
 void appendNode(pid_t pid, char* cmd) {
-	printf("debug1\n");
+	#ifdef DEBUG
+		printf("Call to appendNode(%d, %s)\n", pid, cmd);
+	#endif
 	node_t* new_proc = (node_t*)malloc(sizeof(node_t));
-		printf("debug2\n");
 	new_proc->pid = pid;
 	new_proc->cmd = cmd;
 	new_proc->status = RUNNING;
 	new_proc->next = NULL;
 	new_proc->prev = listTail;
-printf("debug3\n");
+
 	if (listTail != NULL) listTail->next = new_proc;
 	listTail = new_proc;
 	if (listHead == NULL) listHead = new_proc;
-	printf("debug4\n");
+	#ifdef DEBUG
+		printf("appendNode(%d, %s) call finished\n", pid, cmd);
+	#endif
 }
 
 // Remove the node of pid from the tracked process list
 void removeNode(pid_t pid) {
+	#ifdef DEBUG
+		printf("Call to removeNode(%d)\n", pid);
+	#endif
 	node_t* node = findNode(pid);
-printf("debug5\n");
 	if (node != NULL) {
-		printf("debug555");
 		if (node == listHead) listHead = node->next;
 		if (node == listTail) listTail = node->prev;
 		node->next->prev = node->prev;
 		node->prev->next = node->next;
-		printf("debug6\n");
 	} else printf("ERR: Process %d does not exist.\n", pid);
-	printf("debug66\n");
+	#ifdef DEBUG
+		printf("findNode(%d) call finished\n", pid);
+	#endif
 }
 
 //transform a string to a pid and return it. Return -1 if not valid.
 // DOES NO CHECK IF PID EXISTS.
 pid_t strToPid(char* s) {
+	#ifdef DEBUG
+		printf("Call to strToPid(%s)", s);
+	#endif
 	int i;
 	for (i = 0; i < strlen(s); i++){
 		if (!isdigit(s[i])) return -1;
 	}
-printf("debug7\n");
 	return atoi(s);
+	#ifdef DEBUG
+		printf("strToPid(%s) call finished\n", s);
+	#endif
 }
 
 //forks into a child process and attempts to execute the command given in args.
