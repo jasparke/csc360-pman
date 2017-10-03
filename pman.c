@@ -161,7 +161,17 @@ void bglist() {
 }
 
 // attempt to execute a command if it has valid arguments, otherwise print the error.
-void execute(int cmd, char** args) {
+void execute(char* args[], int argcount) {
+	//is the first argument passed a valid command? if so which one!
+	int i;
+	int cmd = -1;
+	for (i = 0; i < 6; i++) {
+		if (!strcmp(args[0], COMMANDS[i])) {
+			cmd = i;
+			break;
+		}
+	}
+
 	switch (cmd) { // handle the "generic cases"
 		case 0: {
 			bg(args);
@@ -221,8 +231,14 @@ int main() {
 
 			}
 		}
+		for (i = 0; i < argcount; i++) {
+			printf("%s ", args[i]);
+		}
+		printf("\n");
+		execute(args, argcount);
 	}
 }
+
 /*
 int main() {
 	while(true) {
