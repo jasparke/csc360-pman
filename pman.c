@@ -83,6 +83,7 @@ void removeNode(pid_t pid) {
 	node_t* node = findNode(pid);
 printf("debug5\n");
 	if (node != NULL) {
+		printf("debug555");
 		if (node == listHead) listHead = node->next;
 		if (node == listTail) listTail = node->prev;
 		node->next->prev = node->prev;
