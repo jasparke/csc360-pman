@@ -142,7 +142,7 @@ void removeNode(pid_t pid) {
 }
 
 //find a node in the tracked processes with a pid. Returns NULL if not found
-node_t findNode(pid_t pid) {
+node_t* findNode(pid_t pid) {
 	node_t* curr = listHead;
 	while (curr != NULL) {
 		if (curr->pid == pid) break;
