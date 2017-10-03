@@ -95,17 +95,19 @@ pid_t strToPid(char* s) {
 
 //forks into a child process and attempts to execute the command given in args.
 void bg(char** args) {
-	pid_t pid = fork();
-	if (pid == 0) { //hello child
-		execvp(args[1], &args[2]);
-		printf("ERR: failed to execute %s\n", args[1]);
-		exit(1);
-	} else if (pid > 0) {
-		printf("Process %d was started\n", pid);
-		appendNode(pid, args[1]);
-		usleep(1000);
-	} else {
-		printf("ERR: Could not fork() :(");
+	if (args) {
+		pid_t pid = fork();
+		if (pid == 0) { //hello child
+			execvp(args[1], &args[2]);
+			printf("ERR: failed to execute %s\n", args[1]);
+			exit(1);
+		} else if (pid > 0) {
+			printf("Process %d was started\n", pid);
+			appendNode(pid, args[1]);
+			usleep(1000);
+		} else {
+			printf("ERR: Could not fork() :(");
+		}
 	}
 }
 
@@ -185,6 +187,11 @@ void execute(char* args[], int argcount) {
 			cmd = i;
 			break;
 		}
+	}
+
+	if (cmd != 5 && argcount < 2) {
+		printf("ERR: Not enough arguments supplied for %s\n", args[0]);
+		return;
 	}
 
 	switch (cmd) { // handle the "generic cases"
