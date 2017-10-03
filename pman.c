@@ -180,8 +180,8 @@ void pstat(pid_t pid) {
 	char* path;
 	char* lb;
 
-	char comm[];
-	char state;
+	char* comm[80];
+	char* state;
 	unsigned long int utime;
 	unsigned long int stime;
 	unsigned long int rss;
