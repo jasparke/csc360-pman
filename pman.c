@@ -110,7 +110,6 @@ void bg(char** args) {
 			printf("ERR: Could not fork() :(");
 		}
 	}
-	printf("bg finished.......\n");
 }
 
 //These three functions are more or less identical - check if pid exists and send the relevant signal to them.
@@ -241,6 +240,7 @@ void updateBackgroundProcess() {
 			if (WIFEXITED(stat)) {
 				printf("Process %d terminated\n", pid);
 				removeNode(pid);
+				printf("debug");
 			} else if (WIFSTOPPED(stat)) {
 				printf("Process %d was stopped\n", pid);
 				findNode(pid)->status = STOPPED;
