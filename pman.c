@@ -63,6 +63,9 @@ node_t* findNode(pid_t pid) {
 		curr = curr->next;
 	}
 
+	#ifdef DEBUG
+		printf("findNode(%d) call finished\n", pid);
+	#endif
 	return curr;
 }
 
