@@ -98,12 +98,11 @@ pid_t strToPid(char* s) {
 }
 
 //forks into a child process and attempts to execute the command given in args.
-/*void bg(char** args, int argcount) {
+void bg(char** args, int argcount) {
 	if (args) {
 		if (!access(args[1], X_OK)) { // only fork if the command is actually executable.
 			pid_t pid = fork(); // start a child
 			if (pid == 0) { //hello child
-				printf("execvp(%s, %s, %s, %s)\n", args[1], args[2], args[3], args[4]);
 				execvp(args[1], &args[1]);
 				printf("ERR: failed to execute command %s\n", args[1]);
 				exit(1);
@@ -118,22 +117,8 @@ pid_t strToPid(char* s) {
 			printf("ERR: can not execute %s\n", args[1]);
 		}
 	}
-}*/
-void bg(char** userInput, int i) {
-	pid_t pid = fork();
-	if (pid == 0) {    // child
-		char* command = userInput[1];
-		execvp(command, &userInput[1]);
-		printf("Error: failed to execute command %s\n", command);
-		exit(1);
-	} else if (pid > 0) {		// parent
-		printf("Started background process %d\n", pid);
-		appendNode(pid, userInput[1]);
-		sleep(1);
-	} else {
-		printf("Error: failed to fork\n");
-	}
 }
+
 //These three functions are more or less identical - check if pid exists and send the relevant signal to them.
 //Erros on bad pid or fail to send signal.
 void bgkill(pid_t pid) {
