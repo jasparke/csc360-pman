@@ -105,8 +105,6 @@ void bg(char** args, int argcount) {
 			if (pid == 0) { //hello child
 				printf("execvp(%s, %s)", args[1], args[2]);
 				execvp(args[1], &args[1]);
-				printf("ERR: failed to execute %s\n", args[1]);
-				exit(1); //kill the failed pman
 			} else if (pid > 0) { // when back in the parent, add the started child to the list.
 				printf("Process %d was started\n", pid);
 				appendNode(pid, args[1]);
@@ -132,7 +130,7 @@ void bgkill(pid_t pid) {
 	if(node == NULL) {
 		printf("ERR: Process %d does not exist.\n", pid);
 		return;
-	}
+	} else { printf("killing");}
 
 	if (kill(pid, SIGTERM)) printf("ERR: failed to send SIGTERM to process %d\n", pid);
 }
