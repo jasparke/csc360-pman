@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <sys/types.h>
+#include <signal.h>
+
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -49,7 +51,7 @@ void bg(char** args) {
 	pid_t pid = fork();
 	if (pid == 0) { //hello child
 		execvp(args[1], &args[1]);
-		printf("ERR: failed to execute %s\n", args);
+		printf("ERR: failed to execute %s\n", args[1]);
 		exit(1);
 	} else if (pid > 0) {
 		printf("Process %d was started\n", pid);
