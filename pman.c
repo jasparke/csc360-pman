@@ -215,10 +215,10 @@ int main() {
 		token = strtok(prompt, " ");
 		if(strcmp(token, "")) {
 			for (i = 0; i < MAX_LEN; i++) {
-				if (token) argcount++;
+				if (token) {argcount++;printf("%s\n", token);}
 				args[i] = token;
 				token = strtok(NULL, " ");
-				printf("%s\n", token);
+
 			}
 		}
 	}
