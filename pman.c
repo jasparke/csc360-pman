@@ -96,7 +96,7 @@ pid_t strToPid(char* s) {
 void bg(char** args) {
 	pid_t pid = fork();
 	if (pid == 0) { //hello child
-		execvp(args[1], &args[1]);
+		execvp(args[1], &args[2]);
 		printf("ERR: failed to execute %s\n", args[1]);
 		exit(1);
 	} else if (pid > 0) {
@@ -111,6 +111,10 @@ void bg(char** args) {
 //These three functions are more or less identical - check if pid exists and send the relevant signal to them.
 //Erros on bad pid or fail to send signal.
 void bgkill(pid_t pid) {
+	if (pid == -1) {
+		printf("Error: SOMETHING\n");
+		return;
+	}
 	node_t* node = findNode(pid);
 
 	if(node == NULL) {
@@ -122,6 +126,10 @@ void bgkill(pid_t pid) {
 }
 
 void bgstart(pid_t pid) {
+	if (pid == -1) {
+		printf("Error: SOMETHING\n");
+		return;
+	}
 	node_t* node = findNode(pid);
 
 	if(node == NULL) {
@@ -133,6 +141,10 @@ void bgstart(pid_t pid) {
 }
 
 void bgstop(pid_t pid) {
+	if (pid == -1) {
+		printf("Error: SOMETHING\n");
+		return;
+	}
 	node_t* node = findNode(pid);
 
 	if(node == NULL) {
@@ -225,16 +237,11 @@ int main() {
 		token = strtok(prompt, " ");
 		if(strcmp(token, "")) {
 			for (i = 0; i < MAX_LEN; i++) {
-				if (token) {argcount++;printf("%s\n", token);}
+				if (token) argcount++;
 				args[i] = token;
 				token = strtok(NULL, " ");
-
 			}
 		}
-		for (i = 0; i < argcount; i++) {
-			printf("%s ", args[i]);
-		}
-		printf("\n");
 		execute(args, argcount);
 	}
 }
