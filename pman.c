@@ -51,12 +51,26 @@ node_t* listTail = NULL;
 node_t* findNode(pid_t pid) {
 	node_t* curr = listHead;
 
-	while (curr != NULL) {
-		if (curr->pid == pid) break;
+	if(listHead == NULL) return NULL;
+
+	while(curr->pid != pid) {
+		if (curr->next == NULL) return NULL;
 		curr = curr->next;
 	}
 
 	return curr;
+
+	/*
+	node_t* curr = listHead;
+	printf("findnode");
+
+	while (curr != NULL) {
+		if (curr->pid == pid) break;
+		curr = curr->next;
+		printf("loop");
+	}
+
+	return curr;*/
 }
 
 // Append a process to the process list
