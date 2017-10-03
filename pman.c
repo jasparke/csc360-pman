@@ -128,7 +128,7 @@ void bg(char** userInput, int i) {
 		exit(1);
 	} else if (pid > 0) {		// parent
 		printf("Started background process %d\n", pid);
-		addProcessToList(pid, userInput[1]);
+		appendNode(pid, userInput[1]);
 		sleep(1);
 	} else {
 		printf("Error: failed to fork\n");
