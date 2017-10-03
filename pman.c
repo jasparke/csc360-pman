@@ -220,9 +220,9 @@ void pstat(pid_t pid) {
 	printf("state\t: %c\n", state);
 	printf("utime\t: %lu\n", utime);
 	printf("stime\t: %lu\n", stime);
-	printf("rss\t: %s\n", rss);
-	printf("voluntary_ctx_switches\t: %l\n", vcs);
-	printf("nonvoluntary_ctx_switches\t: %s\n", nvcs);
+	printf("rss\t: %lu\n", rss);
+	printf("voluntary_ctx_switches\t: %ld\n", vcs);
+	printf("nonvoluntary_ctx_switches\t: %ld\n", nvcs);
 }
 
 //prints out a list of all jobs with their pid, and the total count of jobs.
