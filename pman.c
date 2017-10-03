@@ -85,7 +85,8 @@ void removeNode(pid_t pid) {
 //transform a string to a pid and return it. Return -1 if not valid.
 // DOES NO CHECK IF PID EXISTS.
 pid_t strToPid(char* s) {
-	for (int i = 0; i < strlen(s); i++)
+	int i;
+	for (i = 0; i < strlen(s); i++)
 		if (!isdigit(s[i])) return -1;
 
 	return atoi(s);
