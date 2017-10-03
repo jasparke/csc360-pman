@@ -53,6 +53,7 @@ node_t* findNode(pid_t pid) {
 
 	while (curr != NULL) {
 		if (curr->pid == pid) break;
+		curr = curr->next;
 	}
 
 	return curr;
@@ -74,9 +75,8 @@ void appendNode(pid_t pid, char* cmd) {
 
 // Remove the node of pid from the tracked process list
 void removeNode(pid_t pid) {
-	node_t* node = findNode(pid);
+	node_t* curr = listHead;
 
-printf("debug removeNode");
 	if (node != NULL) {
 		if (node == listHead) listHead = node->next;
 		if (node == listTail) listTail = node->prev;
