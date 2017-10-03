@@ -96,15 +96,16 @@ pid_t strToPid(char* s) {
 //forks into a child process and attempts to execute the command given in args.
 void bg(char** args) {
 	if (args) {
-		pid_t pid = fork();
+		pid_t pid = fork(); // start a child
 		if (pid == 0) { //hello child
-			execvp(args[1], &args[2]);
+			char* ctr = args[1];
+			execvp(ctr, &args[1]);
 			printf("ERR: failed to execute %s\n", args[1]);
-			exit(1);
-		} else if (pid > 0) {
+			exit(1); //kill the failed pman
+		} else if (pid > 0) { // when back in the parent, add the started child to the list.
 			printf("Process %d was started\n", pid);
 			appendNode(pid, args[1]);
-			usleep(1000);
+			usleep(1000); //take a nap for a second
 		} else {
 			printf("ERR: Could not fork() :(");
 		}
