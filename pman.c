@@ -131,7 +131,7 @@ void bgkill(pid_t pid) {
 	if(node == NULL) {
 		printf("ERR: Process %d does not exist.\n", pid);
 		return;
-	} else { printf("killing");}
+	}
 
 	if (kill(pid, SIGTERM)) printf("ERR: failed to send SIGTERM to process %d\n", pid);
 }
@@ -281,6 +281,7 @@ int main() {
 			}
 		}
 		execute(args, argcount);
+		updateBackgroundProcess();
 	}
 }
 
