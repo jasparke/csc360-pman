@@ -1,8 +1,8 @@
 .phony all:
-all: rsi
+all: pman
 
-rsi: rsi.c
-	gcc rsi.c -lreadline -lhistory -o rsi
+pman: pman.c
+	gcc pman.c -lreadline -lhistory -o pman
 
 .PHONY clean:
 clean:
