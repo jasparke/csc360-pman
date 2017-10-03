@@ -237,7 +237,7 @@ void execute(char* args[], int argcount) {
 }
 void updateBackgroundProcess() {
 	pid_t pid;
-	int stat;/*
+	int stat;
 	while (true) {
 		pid = waitpid(-1, &stat, WCONTINUED | WNOHANG | WUNTRACED);
 		if (pid > 0) {
@@ -257,7 +257,7 @@ void updateBackgroundProcess() {
 		} else {
 			break;
 		}
-	}*/
+	}
 }
 
 // build the prompt for user input and runs the main program loop.
