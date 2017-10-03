@@ -197,6 +197,9 @@ void execute(int cmd, char** args) {
 		}
 	}
 }
+void updateBackgroundProcess() {
+	printf("DO SOMETHING");
+}
 
 // build the prompt for user input and runs the main program loop.
 int main() {
