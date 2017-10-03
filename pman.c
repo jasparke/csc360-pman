@@ -181,7 +181,7 @@ void pstat(pid_t pid) {
 	char* lb;
 
 	char* comm[80];
-	char* state;
+	char state;
 	unsigned long int utime;
 	unsigned long int stime;
 	unsigned long int rss;
