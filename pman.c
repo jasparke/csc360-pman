@@ -7,21 +7,21 @@
 	CSC360 - Assignment 1
  */
 
+#include <unistd.h>
+#include <ctype.h>
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <signal.h>
 
 #include <readline/readline.h>
 #include <readline/history.h>
 
-enum {
-	MAX_LEN = 120,
-	RUNNING = 1,
-	STOPPED = 0
-};
+#define MAX_LEN 35
+#define RUNNING 1
+#define STOPPED 0
 
 const char* PROMPTSTRING = "PMan>: ";
 char* COMMANDS[] = {
@@ -45,6 +45,51 @@ typedef struct node_t {
 node_t* listHead = NULL;
 node_t* listTail = NULL;
 
+/* ### LIST FUNCTIONS ### */
+
+//find a node in the tracked processes with a pid. Returns NULL if not found
+node_t* findNode(pid_t pid) {
+	node_t* curr = listHead;
+	while (curr != NULL) {
+		if (curr->pid == pid) break;
+	}
+
+	return curr;
+}
+
+// Append a process to the process list
+void appendNode(pid_t pid, char* cmd) {
+	node_t* new_proc = (node_t*)malloc(sizeof(node_t));
+	new_proc->pid = pid;
+	new_proc->cmd = cmd;
+	new_proc->status = RUNNING;
+	new_proc->next = NULL;
+	new_proc->prev = listTail;
+
+	listTail = new_proc;
+	if (listHead == NULL) listHead = new_proc;
+}
+
+// Remove the node of pid from the tracked process list
+void removeNode(pid_t pid) {
+	node_t* node = findNode(pid);
+
+	if (node != NULL) {
+		if (node == listHead) listHead = node->next;
+		if (node == listTail) listTail = node->prev;
+		node->next->prev = node->prev;
+		node->prev->next = node->next;
+	} else printf("ERR: Process %d does not exist.\n", pid);
+}
+
+//transform a string to a pid and return it. Return -1 if not valid.
+// DOES NO CHECK IF PID EXISTS.
+pid_t strToPid(char* s) {
+	for (int i = 0; i < strlen(s); i++)
+		if (!isdigit(s[i])) return -1;
+
+	return atoi(s);
+}
 
 //forks into a child process and attempts to execute the command given in args.
 void bg(char** args) {
@@ -114,54 +159,6 @@ void bglist() {
 	printf("Total background jobs: \t %d\n", count);
 }
 
-/* ### LIST FUNCTIONS ### */
-
-// Append a process to the process list
-void appendNode(pid_t pid, char* cmd) {
-	node_t* new_proc = (node_t*)malloc(sizeof(node_t));
-	new_proc->pid = pid;
-	new_proc->cmd = cmd;
-	new_proc->status = RUNNING;
-	new_proc->next = NULL;
-	new_proc->prev = listTail;
-
-	listTail = new_proc;
-	if (listHead == NULL) listHead = new_proc;
-}
-
-// Remove the node of pid from the tracked process list
-void removeNode(pid_t pid) {
-	node_t* node = findNode(pid);
-
-	if (node != NULL) {
-		if (node == listHead) listHead = node->next;
-		if (node == listTail) listTail = node->prev;
-		node->next->prev = node->prev;
-		node->prev->next = node->next;
-	} else printf("ERR: Process %d does not exist.\n", pid);
-}
-
-//find a node in the tracked processes with a pid. Returns NULL if not found
-node_t* findNode(pid_t pid) {
-	node_t* curr = listHead;
-	while (curr != NULL) {
-		if (curr->pid == pid) break;
-	}
-
-	return curr;
-}
-
-
-
-//transform a string to a pid and return it. Return -1 if not valid.
-// DOES NO CHECK IF PID EXISTS.
-pid_t strToPid(char* s) {
-	for (int i = 0; i < strlen(s); i++)
-		if (!isdigit(s.charat(i))) return -1;
-
-	return atoi(s);
-}
-
 // attempt to execute a command if it has valid arguments, otherwise print the error.
 void execute(int cmd, char** args) {
 	switch (cmd) { // handle the "generic cases"
@@ -202,16 +199,36 @@ void execute(int cmd, char** args) {
 
 // build the prompt for user input and runs the main program loop.
 int main() {
+	while (true) {
+		updateBackgroundProcess();
+		char* args[MAX_LEN];
+		char* token;
+		int argcount = 0;
+
+		char* prompt = readline("PMan:> ");
+		token = strtok(prompt, " ");
+		if(strcmp(token, "")) {
+			for (int i = 0; i < MAX_LEN; i++) {
+				if (token) argcount++;
+				args[i] = token;
+				token = strtok(NULL, " ");
+			}
+		}
+	}
+}
+/*
+int main() {
 	while(true) {
-		char* prompt[MAX_LEN] = NULL;
+		char* promptInput[MAX_LEN];
 
 		updateBackgroundProcess();
 		prompt = readline("PMan:> ");
 		if (strcmp(prompt, "")) {
-			char* tokenizedPrompt = strtok(prompt, " ");
+			char* tokenizedPrompt[MAX_LEN];
 			int command = -1;
 			for (int i = 0; i < 6; i++) {
-				if (strcmp(tokenizedPrompt[0], COMMANDS[i]) == 0) {
+				tokenizedPrompt = strtok(prompt, " ");
+				if (strcmp(tokenizedPrompt, COMMANDS[i]) == 0) {
 					command = i;
 					break;
 				}
@@ -222,4 +239,4 @@ int main() {
 	}
 
 	 return 0;
-}
+}*/
