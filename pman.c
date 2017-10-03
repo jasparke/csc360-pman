@@ -59,43 +59,35 @@ node_t* findNode(pid_t pid) {
 	}
 
 	return curr;
-
-	/*
-	node_t* curr = listHead;
-	printf("findnode");
-
-	while (curr != NULL) {
-		if (curr->pid == pid) break;
-		curr = curr->next;
-		printf("loop");
-	}
-
-	return curr;*/
 }
 
 // Append a process to the process list
 void appendNode(pid_t pid, char* cmd) {
+	printf("debug1\n");
 	node_t* new_proc = (node_t*)malloc(sizeof(node_t));
+		printf("debug2\n");
 	new_proc->pid = pid;
 	new_proc->cmd = cmd;
 	new_proc->status = RUNNING;
 	new_proc->next = NULL;
 	new_proc->prev = listTail;
-
+printf("debug3\n");
 	if (listTail != NULL) listTail->next = new_proc;
 	listTail = new_proc;
 	if (listHead == NULL) listHead = new_proc;
+	printf("debug4\n");
 }
 
 // Remove the node of pid from the tracked process list
 void removeNode(pid_t pid) {
 	node_t* node = findNode(pid);
-printf("tag");
+printf("debug5\n");
 	if (node != NULL) {
 		if (node == listHead) listHead = node->next;
 		if (node == listTail) listTail = node->prev;
 		node->next->prev = node->prev;
 		node->prev->next = node->next;
+		printf("debug6\n");
 	} else printf("ERR: Process %d does not exist.\n", pid);
 }
 
@@ -103,15 +95,16 @@ printf("tag");
 // DOES NO CHECK IF PID EXISTS.
 pid_t strToPid(char* s) {
 	int i;
-	for (i = 0; i < strlen(s); i++)
+	for (i = 0; i < strlen(s); i++){
 		if (!isdigit(s[i])) return -1;
-
+	}
+printf("debug7\n");
 	return atoi(s);
 }
 
 //forks into a child process and attempts to execute the command given in args.
 void bg(char** args) {
-	if (args) {
+	if (args) {printf("debug8\n");
 		pid_t pid = fork(); // start a child
 		if (pid == 0) { //hello child
 			char* ctr = args[1];
@@ -119,8 +112,8 @@ void bg(char** args) {
 			printf("ERR: failed to execute %s\n", args[1]);
 			exit(1); //kill the failed pman
 		} else if (pid > 0) { // when back in the parent, add the started child to the list.
-			printf("Process %d was started\n", pid);
-			appendNode(pid, args[1]);
+			printf("Process %d was started\n", pid);printf("debug9\n");
+			appendNode(pid, args[1]);printf("debug10\n");
 			usleep(1000); //take a nap for a second
 		} else {
 			printf("ERR: Could not fork() :(");
