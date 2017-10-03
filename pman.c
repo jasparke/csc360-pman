@@ -75,7 +75,7 @@ void appendNode(pid_t pid, char* cmd) {
 
 // Remove the node of pid from the tracked process list
 void removeNode(pid_t pid) {
-	node_t* curr = listHead;
+	node_t* node = findNode(pid);
 
 	if (node != NULL) {
 		if (node == listHead) listHead = node->next;
