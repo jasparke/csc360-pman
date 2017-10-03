@@ -105,19 +105,21 @@ printf("debug7\n");
 
 //forks into a child process and attempts to execute the command given in args.
 void bg(char** args) {
-	if (args) {printf("debug8\n");
-		pid_t pid = fork(); // start a child
-		if (pid == 0) { //hello child
-			char* ctr = args[1];
-			execvp(ctr, &args[1]);
-			printf("ERR: failed to execute %s\n", args[1]);
-			exit(1); //kill the failed pman
-		} else if (pid > 0) { // when back in the parent, add the started child to the list.
-			printf("Process %d was started\n", pid);printf("debug9\n");
-			appendNode(pid, args[1]);printf("debug10\n");
-			usleep(1000); //take a nap for a second
-		} else {
-			printf("ERR: Could not fork() :(");
+	if (args) {
+		if (!access(args[1], X_OK)) {
+			pid_t pid = fork(); // start a child
+			if (pid == 0) { //hello child
+				char* ctr = args[1];
+				execvp(ctr, &args[1]);
+				printf("ERR: failed to execute %s\n", args[1]);
+				exit(1); //kill the failed pman
+			} else if (pid > 0) { // when back in the parent, add the started child to the list.
+				printf("Process %d was started\n", pid);printf("debug9\n");
+				appendNode(pid, args[1]);printf("debug10\n");
+				usleep(1000); //take a nap for a second
+			} else {
+				printf("ERR: Could not fork() :(");
+			}
 		}
 	}
 }
