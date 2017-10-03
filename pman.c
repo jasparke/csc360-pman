@@ -120,21 +120,20 @@ pid_t strToPid(char* s) {
 }
 
 //forks into a child process and attempts to execute the command given in args.
-void bg(char** args) {
+void bg(char** args, int argcount) {
 	if (args) {
-		if (!access(args[1], X_OK)) {
+		if (!access(args[1], X_OK)) { // only fork if the command is actually executable.
 			pid_t pid = fork(); // start a child
 			if (pid == 0) { //hello child
-				char* ctr = args[1];
-				execvp(ctr, &args[2]);
+				execvp(args[1], &args[1]);
 				printf("ERR: failed to execute %s\n", args[1]);
 				exit(1); //kill the failed pman
 			} else if (pid > 0) { // when back in the parent, add the started child to the list.
-				printf("Process %d was started\n", pid);printf("debug9\n");
-				appendNode(pid, args[1]);printf("debug10\n");
+				printf("Process %d was started\n", pid);
+				appendNode(pid, args[1]);
 				usleep(1000); //take a nap for a second
 			} else {
-				printf("ERR: Could not fork() :(");
+				printf("ERR: Could not fork :(");
 			}
 		} else {
 			printf("ERR: can not execute %s\n", args[1]);
@@ -227,7 +226,7 @@ void execute(char* args[], int argcount) {
 
 	switch (cmd) { // handle the "generic cases"
 		case 0: {
-			bg(args);
+			bg(args, argcount);
 			break;
 		}
 
@@ -261,7 +260,7 @@ void execute(char* args[], int argcount) {
 }
 void updateBackgroundProcess() {
 	pid_t pid;
-	int stat;
+	int stat;/*
 	while (true) {
 		pid = waitpid(-1, &stat, WCONTINUED | WNOHANG | WUNTRACED);
 		if (pid > 0) {
@@ -281,7 +280,7 @@ void updateBackgroundProcess() {
 		} else {
 			break;
 		}
-	}
+	}*/
 }
 
 // build the prompt for user input and runs the main program loop.
