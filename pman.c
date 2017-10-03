@@ -223,7 +223,28 @@ void execute(char* args[], int argcount) {
 	}
 }
 void updateBackgroundProcess() {
-	printf("\ncall to updateBackgroundProcess()\n");
+	pid_t pid;
+	int stat;
+	while (true) {
+		pid = waitpid(-1, &status, WCONTINUED | WNOHANG | WUNTRACED);
+		if (pid > 0) {
+			if (WIFEXITED(stat)) {
+				printf("Process %d terminated\n", pid);
+				removeNode(pid);
+			} else if (WIFSTOPPED(stat)) {
+				printf("Process %d was stopped\n", pid);
+				findNode(pid)->status = STOPPED;
+			} else if (WIFSIGNALED(stat)) {
+				printf("Process %d was killed\n", pid);
+				removeNode(pid);
+			} else if (WIFEXITED(stat)) {
+				printf("Process %d started\n", pid);
+				findNode(pid)->status = RUNNING;
+			}
+		} else {
+			break;
+		}
+	}
 }
 
 // build the prompt for user input and runs the main program loop.
