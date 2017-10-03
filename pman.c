@@ -99,6 +99,7 @@ void removeNode(pid_t pid) {
 		printf("returned to removenode from findnode\n");
 		printf("removenode call to findnode returned%s\n", (node == NULL)? "Null" : "not null");
 		printf("kkkkkkk..... this should go into the next if statement\n");
+	#endif
 	if (node != NULL) {
 		if (node == listHead) listHead = listHead->next;
 		else node->prev->next = node->next;
