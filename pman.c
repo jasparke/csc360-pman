@@ -105,7 +105,7 @@ void bg(char** args, int argcount) {
 			if (pid == 0) { //hello child
 				printf("execvp(%s, %s, %s, %s)\n", args[1], args[2], args[3], args[4]);
 				execvp(args[1], &args[1]);
-				printf("Error: failed to execute command %s\n", command);
+				printf("Error: failed to execute command %s\n", args[1]);
 				exit(1);
 			} else if (pid > 0) { // when back in the parent, add the started child to the list.
 				printf("Process %d was started\n", pid);
