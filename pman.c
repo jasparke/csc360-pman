@@ -170,6 +170,7 @@ void bgstop(pid_t pid) {
 
 //prints out the stat file info for a pid. ONLY DOES THIS IF PID IS TRACKED BY pman
 void pstat(pid_t pid) {
+	/*
 	node_t* node = findNode(pid);
 
 	if (node == NULL) {
@@ -223,6 +224,8 @@ void pstat(pid_t pid) {
 	printf("rss\t: %lu\n", rss);
 	printf("voluntary_ctx_switches\t: %ld\n", vcs);
 	printf("nonvoluntary_ctx_switches\t: %ld\n", nvcs);
+	*/
+	printf("this broke :( don't know why");
 }
 
 //prints out a list of all jobs with their pid, and the total count of jobs.
