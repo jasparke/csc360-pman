@@ -199,16 +199,18 @@ void execute(int cmd, char** args) {
 
 // build the prompt for user input and runs the main program loop.
 int main() {
+
+	int argcount, i;
 	while (true) {
 		updateBackgroundProcess();
 		char* args[MAX_LEN];
 		char* token;
-		int argcount = 0;
+		argcount = 0;
 
 		char* prompt = readline("PMan:> ");
 		token = strtok(prompt, " ");
 		if(strcmp(token, "")) {
-			for (int i = 0; i < MAX_LEN; i++) {
+			for (i = 0; i < MAX_LEN; i++) {
 				if (token) argcount++;
 				args[i] = token;
 				token = strtok(NULL, " ");
