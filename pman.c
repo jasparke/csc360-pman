@@ -184,9 +184,9 @@ void pstat(pid_t pid) {
 	char state;
 	unsigned long int utime;
 	unsigned long int stime;
-	unsigned long double rss;
-	unsigned long int vcs;
-	unsigned long int nvcs;
+	unsigned long int rss;
+	long int vcs;
+	long int nvcs;
 
 	sprintf(path, "/proc/%d/stat", pid);
 	FILE* stat = fopen(path, "r");
@@ -221,7 +221,7 @@ void pstat(pid_t pid) {
 	printf("utime\t: %lu\n", utime);
 	printf("stime\t: %lu\n", stime);
 	printf("rss\t: %s\n", rss);
-	printf("voluntary_ctx_switches\t: %s\n", vcs);
+	printf("voluntary_ctx_switches\t: %l\n", vcs);
 	printf("nonvoluntary_ctx_switches\t: %s\n", nvcs);
 }
 
