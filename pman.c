@@ -198,7 +198,7 @@ void execute(int cmd, char** args) {
 	}
 }
 void updateBackgroundProcess() {
-	printf("DO SOMETHING");
+	printf("\ncall to updateBackgroundProcess()\n");
 }
 
 // build the prompt for user input and runs the main program loop.
@@ -218,6 +218,7 @@ int main() {
 				if (token) argcount++;
 				args[i] = token;
 				token = strtok(NULL, " ");
+				printf("%s\n", token);
 			}
 		}
 	}
