@@ -74,7 +74,7 @@ void appendNode(pid_t pid, char* cmd) {
 // Remove the node of pid from the tracked process list
 void removeNode(pid_t pid) {
 	node_t* node = findNode(pid);
-
+printf("debug removeNode");
 	if (node != NULL) {
 		if (node == listHead) listHead = node->next;
 		if (node == listTail) listTail = node->prev;
@@ -240,7 +240,6 @@ void updateBackgroundProcess() {
 			if (WIFEXITED(stat)) {
 				printf("Process %d terminated\n", pid);
 				removeNode(pid);
-				printf("debug");
 			} else if (WIFSTOPPED(stat)) {
 				printf("Process %d was stopped\n", pid);
 				findNode(pid)->status = STOPPED;
