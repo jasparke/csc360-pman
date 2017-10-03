@@ -120,6 +120,8 @@ void bg(char** args) {
 			} else {
 				printf("ERR: Could not fork() :(");
 			}
+		} else {
+			printf("ERR: can not execute %s\n", args[1]);
 		}
 	}
 }
