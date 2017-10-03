@@ -109,6 +109,7 @@ void bg(char** args) {
 			printf("ERR: Could not fork() :(");
 		}
 	}
+	printf("bg finished.......\n");
 }
 
 //These three functions are more or less identical - check if pid exists and send the relevant signal to them.
