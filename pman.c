@@ -51,13 +51,10 @@ node_t* listTail = NULL;
 node_t* findNode(pid_t pid) {
 	node_t* curr = listHead;
 
-printf("debug findnode1\n");
 	while (curr != NULL) {
-printf("debug findnodelooppppp\n");
 		if (curr->pid == pid) break;
 	}
 
-	printf("debug removeNodedone loop\n");
 	return curr;
 }
 
@@ -78,6 +75,8 @@ void appendNode(pid_t pid, char* cmd) {
 // Remove the node of pid from the tracked process list
 void removeNode(pid_t pid) {
 	node_t* node = findNode(pid);
+
+printf("debug removeNode");
 	if (node != NULL) {
 		if (node == listHead) listHead = node->next;
 		if (node == listTail) listTail = node->prev;
