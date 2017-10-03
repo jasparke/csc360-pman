@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <regex.h>
 #include <signal.h>
 
 #include <readline/readline.h>
@@ -32,7 +33,8 @@ char* COMMANDS[] = {
 	"bgstart",
 	"bgstop",
 	"pstat",
-	"bglist"
+	"bglist",
+	"exit"
 };
 
 //node_t for double linked list of cmds.
@@ -166,8 +168,61 @@ void bgstop(pid_t pid) {
 	if (kill(pid, SIGSTOP)) printf("ERR: failed to send SIGSTOP to process %d\n", pid);
 }
 
+//prints out the stat file info for a pid. ONLY DOES THIS IF PID IS TRACKED BY pman
 void pstat(pid_t pid) {
-	printf("you didn't do this yet\n");
+	node_t* node = findNode(pid);
+
+	if (node == NULL) {
+		printf("ERR: %d is not a pman tracked process or does not exist.\n");
+		return;
+	}
+
+	char* path;
+	char* lb;
+
+	char* comm;
+	char state;
+	unsigned long int utime;
+	unsigned long int stime;
+	unsigned long double rss;
+	unsigned long int vcs;
+	unsigned long int nvcs;
+
+	sprintf(path, "/proc/%d/stat", pid);
+	FILE* stat = fopen(path, "r");
+	if (stat != NULL) {
+		fscanf(stat, "* %s %c * * * * * * * * * * %lu %lu * * * * * * * * %ld", &comm, &state, &utime, &stime, &rss);
+		fclose(stat);
+	} else {
+		printf("ERR: Could not open %s", path);
+		return;
+	}
+
+	//stat+us
+	strcat(path, "us");
+	FILE* status = fopen(path, "r");
+	char* statusarr[40];
+	if (status != NULL) {
+		int i = 0;
+		for (; i < 32; i++) {
+			if (fgets(statusarr[i], 40, status) == null) break;
+		}
+		vcs = statusarr[i - 2];
+		nvcs = statusarr[i - 1];
+		fclose(status);
+	} else {
+		printf("ERR: Could not open %s", path);
+		return;
+	}
+
+	printf("pid\t: %d\n", pid);
+	printf("comm\t: %s\n", comm);
+	printf("state\t: %c\n", state);
+	printf("utime\t: %lu\n", utime);
+	printf("stime\t: %lu\n", stime);
+	printf("rss\t: %s\n", rss);
+	printf("voluntary_ctx_switches\t: %s\n", vcs);
+	printf("nonvoluntary_ctx_switches\t: %s\n", nvcs);
 }
 
 //prints out a list of all jobs with their pid, and the total count of jobs.
@@ -183,18 +238,22 @@ void bglist() {
 	printf("Total background jobs: \t %d\n", count);
 }
 
-// attempt to execute a command if it has valid arguments, otherwise print the error.
+// sift throug user input of commands to pman. handles rough input validation,
+// but does not safety check actual arguments, that must be handled by the bg#### functions.
 void execute(char* args[], int argcount) {
 	//is the first argument passed a valid command? if so which one!
 	int i;
 	int cmd = -1;
-	for (i = 0; i < 6; i++) {
+	for (i = 0; i < 7; i++) {
 		if (!strcmp(args[0], COMMANDS[i])) {
 			cmd = i;
 			break;
 		}
 	}
-	if (cmd == -1) {
+	if (cmd == 7) {
+		printf("PMan: Good-Bye!\n");
+		exit(0);
+	} else if (cmd == -1) {
 		printf("PMan: command %s not found\n", args[0]);
 		return;
 	} else if (cmd != 5 && argcount < 2) {
@@ -236,6 +295,8 @@ void execute(char* args[], int argcount) {
 		}
 	}
 }
+
+// use waitpid to determine the state change of child processes. Update as necessary.
 void updateBackgroundProcess() {
 	pid_t pid;
 	int stat;
@@ -284,28 +345,3 @@ int main() {
 		updateBackgroundProcess();
 	}
 }
-
-/*
-int main() {
-	while(true) {
-		char* promptInput[MAX_LEN];
-
-		updateBackgroundProcess();
-		prompt = readline("PMan:> ");
-		if (strcmp(prompt, "")) {
-			char* tokenizedPrompt[MAX_LEN];
-			int command = -1;
-			for (int i = 0; i < 6; i++) {
-				tokenizedPrompt = strtok(prompt, " ");
-				if (strcmp(tokenizedPrompt, COMMANDS[i]) == 0) {
-					command = i;
-					break;
-				}
-			}
-			execute(command, tokenizedPrompt);
-		}
-		updateBackgroundProcess();
-	}
-
-	 return 0;
-}*/
