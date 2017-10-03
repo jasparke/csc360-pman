@@ -173,7 +173,7 @@ void pstat(pid_t pid) {
 	node_t* node = findNode(pid);
 
 	if (node == NULL) {
-		printf("ERR: %d is not a pman tracked process or does not exist.\n");
+		printf("ERR: %d is not a pman tracked process or does not exist.\n", pid);
 		return;
 	}
 
