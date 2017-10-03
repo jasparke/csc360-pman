@@ -95,11 +95,15 @@ void removeNode(pid_t pid) {
 		printf("Call to removeNode(%d)\n", pid);
 	#endif
 	node_t* node = findNode(pid);
+	#ifdef DEBUG
+		printf("returned to removenode from findnode\n");
+		printf("removenode call to findnode returned%s\n", (node == NULL)? "Null" : "not null");
+		printf("kkkkkkk..... this should go into the next if statement\n");
 	if (node != NULL) {
-		if (node == listHead) listHead = node->next;
+		if (node == listHead) listHead = listHead->next;
+		else node->prev->next = node->next;
 		if (node == listTail) listTail = node->prev;
-		node->next->prev = node->prev;
-		node->prev->next = node->next;
+		else node->next->prev = node->prev;
 	} else printf("ERR: Process %d does not exist.\n", pid);
 	#ifdef DEBUG
 		printf("findNode(%d) call finished\n", pid);
